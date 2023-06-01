@@ -13,19 +13,19 @@
 .btnSection {
   flex-direction: row;
 }
-.goodBtn {
+.good {
   width: 100px;
   font-size: 16px;
   border-radius: 4px;
   background-color: green;
 }
-.neuBtn {
+.neutral {
   width: 100px;
   font-size: 16px;
   border-radius: 4px;
   background-color: beige;
 }
-.badBtn {
+.bad {
   width: 100px;
   font-size: 16px;
   border-radius: 4px;

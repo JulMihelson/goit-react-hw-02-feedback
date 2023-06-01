@@ -1,5 +1,7 @@
 import React from 'react';
 import css from './Reviews.module.css';
+import { FeedbackOptions } from './FeedbackOptions';
+import { Statistics } from './Statistics';
 
 class Reviews extends React.Component {
   state = {
@@ -8,52 +10,42 @@ class Reviews extends React.Component {
     bad: 0,
   };
 
-  handleIncrementGood = () => {
+  handleLeaveFeedback = option => {
     this.setState(prevState => ({
-      good: prevState.good + 1,
+      [option]: prevState[option] + 1,
     }));
   };
 
-  handleIncrementNeutral = () => {
-    this.setState(prevState => ({
-      neutral: prevState.neutral + 1,
-    }));
+  countTotal = () => {
+    return Object.values(this.state).reduce((acc, item) => acc + item, 0);
   };
 
-  handleIncrementBad = () => {
-    this.setState(prevState => ({
-      bad: prevState.bad + 1,
-    }));
+  countPercents = () => {
+    const total = this.countTotal();
+    const { good } = this.state;
+    return total ? Math.round((good / total) * 100) : 0;
   };
 
   render() {
     const { good, neutral, bad } = this.state;
-    const totalReviews = good + neutral + bad;
-    const positivePercentage = Math.round((good / totalReviews) * 100);
+    const totalReviews = this.countTotal();
+    const positivePercentage = this.countPercents();
 
     return (
       <div className={css.counter}>
         <span className={css.title}>Reviews' count</span>
-        <div className={css.btnSection}>
-          <button className={css.goodBtn} type="button" onClick={this.handleIncrementGood}>
-            Good
-          </button>
-          <button className={css.neuBtn} type="button" onClick={this.handleIncrementNeutral}>
-            Neutral
-          </button>
-          <button className={css.badBtn} type="button" onClick={this.handleIncrementBad}>
-            Bad
-          </button>
-        </div>
+        <FeedbackOptions
+          onLeaveFeedback={this.handleLeaveFeedback}
+          options={Object.keys(this.state)}
+        />
         {totalReviews > 0 ? (
-          <div>
-            <span className={css.title}>Statistics</span>
-            <span>Good: {good}</span>
-            <span>Neutral: {neutral}</span>
-            <span>Bad: {bad}</span>
-            <span className={css.title}>Total reviews: {totalReviews}</span>
-            <span className={css.title}>Positive feedback: {positivePercentage}%</span>
-          </div>
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            totalReviews={totalReviews}
+            positivePercentage={positivePercentage}
+          />
         ) : (
           <Notification message="There is no feedback" />
         )}
